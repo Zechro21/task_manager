@@ -1,0 +1,59 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// Put these inside your auth middleware group so only logged-in users can reach them
+    Route::middleware(['auth'])->group(function () {
+    
+    // URL to handle saving a new task (POST)
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+
+    // URL to handle updating an existing task (POST or PUT)
+    Route::post('/tasks/update/{id}', [TaskController::class, 'update'])->name('tasks.update');
+
+    // URL to handle deleting a task (GET or DELETE)
+    Route::get('/tasks/delete/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+});
+// --- GUEST ROUTES (Only logged-out users can see these) ---
+    Route::middleware(['guest'])->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+// --- AUTH PROTECTED ROUTES (Only logged-in users can access these) ---
+    Route::middleware(['auth'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    // Task routes we set up previously
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+    Route::post('/tasks/update/{id}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::get('/tasks/delete/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    
+    // Put this inside your Route::middleware(['auth'])->group(...) block:
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/myprofile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/update-info', [ProfileController::class, 'updateInfo'])->name('profile.update_info');
+    Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update_password');
+    Route::post('/profile/update-avatar', [ProfileController::class, 'updateAvatar'])->name('profile.update_avatar');
+
+    // Form submissions endpoint
+    Route::post('/process-task', [TaskController::class, 'processTask'])->name('tasks.process');
+
+    // Deletion endpoints
+    Route::get('/process-task', [TaskController::class, 'processTaskGet'])->name('tasks.process.get');
+});
