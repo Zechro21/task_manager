@@ -20,7 +20,6 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
-        /* Premium Avatar Frame Style */
         .avatar-wrapper {
             position: relative;
             width: 140px;
@@ -39,7 +38,6 @@
             transform: scale(1.02);
             box-shadow: 0 12px 24px rgba(0,0,0,0.12);
         }
-        /* Custom image picker icon overlay button */
         .avatar-hover-picker {
             position: absolute;
             bottom: 4px;
@@ -62,7 +60,6 @@
             transform: scale(1.05);
         }
         
-        /* Form Field Refinements */
         .form-label {
             font-weight: 600;
             color: #475569;
@@ -109,7 +106,14 @@
         
         @if (session('toast'))
             <div class="alert alert-{{ session('toast.type') }} alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-radius: 12px;">
-                <span class="fw-medium small"><i class="fa-solid fa-circle-check me-2"></i>{{ session('toast.message') }}</span>
+                <span class="fw-medium small">
+                    @if(session('toast.type') == 'success')
+                        <i class="fa-solid fa-circle-check me-2 text-success"></i>
+                    @else
+                        <i class="fa-solid fa-circle-exclamation me-2 text-danger"></i>
+                    @endif
+                    {{ session('toast.message') }}
+                </span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -187,7 +191,7 @@
                                 <label class="form-label small">Email Address</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
-                                    <input type="type" name="email" class="form-control" value="{{ $user->email }}" required>
+                                    <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
                                 </div>
                             </div>
                             <div class="col-12 text-end pt-2">
@@ -204,10 +208,21 @@
                         <h6 class="fw-bold text-danger mb-1"><i class="fa-solid fa-shield-halved me-2"></i>Modify Security Password</h6>
                         <p class="small text-muted mb-0">Verify your current credentials before executing updates over secret security logs.</p>
                     </div>
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger py-2 px-3 border-0 small mb-3 shadow-sm" style="border-radius: 10px;">
+                            <ul class="mb-0 ps-3">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     
                     <form action="{{ route('profile.update_password') }}" method="POST">
                         @csrf
                         <div class="row g-3">
+                            
                             <div class="col-12">
                                 <label class="form-label small text-dark">Current Password</label>
                                 <div class="input-group">
@@ -219,7 +234,7 @@
                                 </div>
                             </div>
                             
-                            <hr class="my-4 text-muted opacity-25">
+                            <hr class="my-3 text-muted opacity-25">
 
                             <div class="col-md-6">
                                 <label class="form-label small">New Password</label>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 use App\Models\User;
 
 class ProfileController extends Controller
@@ -38,23 +39,36 @@ class ProfileController extends Controller
         ]);
     }
 
-    // 3. UPDATE PASSWORD
     public function updatePassword(Request $request)
     {
+        // 1. Validate incoming form inputs
+        $request->validate([
+            'current_password' => ['required', 'string'],
+            'new_password' => ['required', 'string', Password::min(6), 'same:confirm_password'],
+        ], [
+            'new_password.same' => 'The new password confirmation does not match.',
+            'new_password.min' => 'The new password must be at least 6 characters long.',
+        ]);
+
         $user = Auth::user();
 
-        $request->validate([
-            'new_password' => 'required|string|min:6',
-            'confirm_password' => 'required|same:new_password',
-        ]);
+        // 2. Check if the provided current password matches what is in the database
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->with('toast', [
+                'type' => 'danger',
+                'message' => 'Your current security password combination is incorrect.'
+            ]);
+        }
 
-        $user->update([
-            'password' => Hash::make($request->new_password),
-        ]);
+        // 3. Encrypt and save the new password string securely
+        $user->forceFill([
+            'password' => Hash::make($request->new_password)
+        ])->save();
 
+        // 4. Return to page with a success feedback toast notice
         return back()->with('toast', [
             'type' => 'success',
-            'message' => 'Password updated successfully!'
+            'message' => 'Access key and password configurations updated successfully!'
         ]);
     }
 
@@ -115,4 +129,5 @@ class ProfileController extends Controller
         // Pass the $user object directly into your view
         return view('profile', compact('user'));
     }
+    
 }

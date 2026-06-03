@@ -48,9 +48,8 @@ Route::get('/', function () {
 
     Route::get('/myprofile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile/update-info', [ProfileController::class, 'updateInfo'])->name('profile.update_info');
-    Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update_password');
     Route::post('/profile/update-avatar', [ProfileController::class, 'updateAvatar'])->name('profile.update_avatar');
-
+    Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update_password');
     // Form submissions endpoint
     Route::post('/process-task', [TaskController::class, 'processTask'])->name('tasks.process');
 
