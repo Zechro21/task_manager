@@ -28,35 +28,37 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Simplified Clean Borders Style (Removed shadows & glass gradients) */
+        /* Removed border and modified background match */
         .workspace-hero-card {
             background: #0f172a;
-            border: 1px solid #0f172a;
+            border: none;
             border-radius: 12px;
             padding: 2rem;
             margin-bottom: 2rem;
         }
 
+        /* Completely stripped borders */
         .panel-glass-card {
             background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
+            border: none;
             border-radius: 12px;
             overflow: hidden;
         }
 
+        /* Stripped default left indicator bar */
         .interactive-row-card {
-            border-left: 4px solid transparent;
+            border-left: none;
             transition: background-color 0.15s ease;
         }
         .interactive-row-card:hover {
             background-color: #f1f5f9 !important;
         }
 
-        /* Color Coding Rules */
-        .interactive-row-card.accent-pending { border-left-color: var(--state-pending); }
-        .interactive-row-card.accent-progress { border-left-color: var(--state-progress); }
-        .interactive-row-card.accent-missed { border-left-color: var(--state-missed); }
-        .interactive-row-card.accent-completed { border-left-color: var(--state-completed); }
+        /* Stripped individual color-coded left accents */
+        .interactive-row-card.accent-pending { border-left: none; }
+        .interactive-row-card.accent-progress { border-left: none; }
+        .interactive-row-card.accent-missed { border-left: none; }
+        .interactive-row-card.accent-completed { border-left: none; }
 
         .section-header-pill {
             font-size: 0.75rem;
@@ -69,7 +71,6 @@
             gap: 0.5rem;
         }
 
-        /* Max-height set to fit exactly 3 items. Triggers scroll bar on the 4th item */
         .scroll-panel-container {
             max-height: 385px; 
             overflow-y: auto;
@@ -106,17 +107,18 @@
             color: #ffffff;
         }
 
-        /* Simple Calendar Widget Styles */
+        /* Stripped border from Calendar Widget Container */
         .calendar-widget {
             background: #ffffff;
-            border: 1px solid var(--border-color);
+            border: none;
             border-radius: 12px;
             padding: 1rem;
         }
+        /* Stripped separator rule below month title */
         .calendar-header {
             font-weight: 700;
             color: var(--text-main);
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: none;
             padding-bottom: 0.5rem;
             margin-bottom: 0.75rem;
         }
@@ -192,7 +194,8 @@
                         <div class="scroll-panel-container d-flex flex-column">
                             <?php foreach($active_tasks as $index => $task): 
                                 $statusAccent = ($task['status'] === 'In Progress') ? 'accent-progress' : 'accent-pending';
-                                $borderBottom = ($index === count($active_tasks) - 1) ? '' : 'border-bottom';
+                                // Changed assignment to prevent trailing bottom borders between looping items
+                                $borderBottom = ''; 
                             ?>
                                 <div class="interactive-row-card <?= $statusAccent ?> p-4 <?= $borderBottom ?>">
                                     <div class="d-flex justify-content-between align-items-start gap-3">
@@ -209,7 +212,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3">
                                         <div class="small text-muted d-flex align-items-center gap-2">
                                             <i class="fa-regular fa-clock text-primary"></i>
                                             <span class="fw-semibold">
@@ -217,7 +220,7 @@
                                             </span>
                                         </div>
                                         <div class="d-flex gap-2">
-                                            <button class="btn btn-light border action-icon-btn edit-task-btn text-dark" 
+                                            <button class="btn btn-light action-icon-btn edit-task-btn text-dark" 
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#editTaskModal" 
                                                     data-id="<?= $task['id'] ?>" 
@@ -229,7 +232,7 @@
                                                 <i class="fa-regular fa-pen-to-square"></i>
                                             </button>
                                             <a href="{{ route('tasks.process.get', ['action' => 'delete', 'id' => $task['id']]) }}" 
-                                               class="btn btn-outline-danger action-icon-btn border-1" 
+                                               class="btn btn-outline-danger action-icon-btn border-0" 
                                                onclick="return confirm('Permanently drop this active task tracking record?');"
                                                title="Drop Entry">
                                                 <i class="fa-regular fa-trash-can"></i>
@@ -252,9 +255,9 @@
                         <?php if(empty($logs)): ?>
                             <div class="p-4 text-center text-muted small fw-medium">No contextual updates cataloged on this server node.</div>
                         <?php else: ?>
-                            <div class="list-group list-group-flush">
+                            <div class="list-group list-group-flush" style="--bs-list-group-border-color: transparent;">
                                 <?php foreach($logs as $log): ?>
-                                    <div class="list-group-item p-3 bg-transparent">
+                                    <div class="list-group-item p-3 bg-transparent border-0">
                                         <div class="d-flex justify-content-between align-items-start gap-3">
                                             <div class="w-100">
                                                 <span class="badge bg-secondary text-dark border-0 small mb-2 text-truncate" style="max-width: 220px; font-size: 0.7rem; background-color: #e2e8f0 !important;"><i class="fa-solid fa-code-fork me-1"></i><?= htmlspecialchars($log['task_title']) ?></span>
@@ -278,7 +281,7 @@
                 <div class="calendar-widget mb-4">
                     <div class="calendar-header d-flex justify-content-between align-items-center">
                         <span id="calendar-month-year">June 2026</span>
-                        <span class="badge bg-light text-dark border small fw-medium" style="font-size: 0.75rem;">System Tracked</span>
+                        <span class="badge bg-light text-dark border-0 small fw-medium" style="font-size: 0.75rem;">System Tracked</span>
                     </div>
                     <div class="calendar-days-grid">
                         <div class="calendar-day-label">Su</div>
@@ -322,9 +325,9 @@
                         <?php if(empty($missed_tasks)): ?>
                             <div class="p-4 text-center text-success small fw-semibold"><i class="fa-solid fa-shield-halved me-2"></i>Infrastructure stable. Zero exceptions.</div>
                         <?php else: ?>
-                            <div class="list-group list-group-flush">
+                            <div class="list-group list-group-flush" style="--bs-list-group-border-color: transparent;">
                                 <?php foreach($missed_tasks as $mt): ?>
-                                    <div class="list-group-item p-3 bg-transparent d-flex justify-content-between align-items-center gap-2">
+                                    <div class="list-group-item p-3 bg-transparent border-0 d-flex justify-content-between align-items-center gap-2">
                                         <div class="w-70">
                                             <h6 class="fw-bold text-dark mb-1 small text-wrap"><?= htmlspecialchars($mt['title']) ?></h6>
                                             <span class="text-danger fw-bold d-block" style="font-size: 0.75rem;"><i class="fa-solid fa-history me-1"></i>Breached: <?= date('M d, Y', strtotime($mt['due_date'])) ?></span>
@@ -346,9 +349,9 @@
                         <?php if(empty($completed_tasks)): ?>
                             <div class="p-4 text-center text-muted small fw-medium">Vault clear. No historical entries tracked yet.</div>
                         <?php else: ?>
-                            <div class="list-group list-group-flush">
+                            <div class="list-group list-group-flush" style="--bs-list-group-border-color: transparent;">
                                 <?php foreach($completed_tasks as $ct): ?>
-                                    <div class="list-group-item p-3 bg-transparent d-flex justify-content-between align-items-center gap-2">
+                                    <div class="list-group-item p-3 bg-transparent border-0 d-flex justify-content-between align-items-center gap-2">
                                         <div class="w-70">
                                             <h6 class="fw-bold text-muted text-decoration-line-through mb-1 small text-wrap"><?= htmlspecialchars($ct['title']) ?></h6>
                                             <span class="text-success fw-semibold d-block" style="font-size: 0.75rem;"><i class="fa-solid fa-circle-check me-1"></i>Terminated Cleanly</span>
@@ -367,7 +370,7 @@
 
     <div class="modal fade" id="addTaskModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered px-3">
-            <div class="modal-content border shadow-none" style="border-radius:12px;">
+            <div class="modal-content border-0 shadow" style="border-radius:12px;">
                 <div class="modal-header border-0 pb-0 pt-4 px-4">
                     <h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-circle-plus text-primary me-2"></i>Create New Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -399,7 +402,7 @@
                         </div>
                     </div>
                     <div class="modal-footer bg-light border-0 p-3" style="border-radius: 0 0 12px 12px;">
-                        <button type="button" class="btn btn-light fw-medium border px-3 btn-sm" style="border-radius: 6px;" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-light fw-medium px-3 btn-sm" style="border-radius: 6px;" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary px-4 btn-sm fw-medium" style="border-radius: 6px;">Save Task</button>
                     </div>
                 </form>
@@ -409,7 +412,7 @@
 
     <div class="modal fade" id="editTaskModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered px-3">
-            <div class="modal-content border shadow-none" style="border-radius:12px;">
+            <div class="modal-content border-0 shadow" style="border-radius:12px;">
                 <div class="modal-header border-0 pb-0 pt-4 px-4">
                     <h5 class="modal-title fw-bold text-dark"><i class="fa-regular fa-pen-to-square text-success me-2"></i>Modify Task Entry</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -443,7 +446,7 @@
                         </div>
                     </div>
                     <div class="modal-footer bg-light border-0 p-3" style="border-radius: 0 0 12px 12px;">
-                        <button type="button" class="btn btn-light fw-medium border px-3 btn-sm" style="border-radius: 6px;" data-bs-dismiss="modal">Dismiss</button>
+                        <button type="button" class="btn btn-light fw-medium px-3 btn-sm" style="border-radius: 6px;" data-bs-dismiss="modal">Dismiss</button>
                         <button type="submit" class="btn btn-success text-white px-4 btn-sm fw-medium" style="border-radius: 6px;">Save Changes</button>
                     </div>
                 </form>
@@ -453,7 +456,7 @@
 
     <div class="modal fade" id="addTaskNoteModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered px-3">
-            <div class="modal-content border shadow-none" style="border-radius:12px;">
+            <div class="modal-content border-0 shadow" style="border-radius:12px;">
                 <div class="modal-header border-0 pb-0 pt-4 px-4">
                     <h5 class="modal-title fw-bold text-dark"><i class="fa-regular fa-comment-dots text-dark me-2"></i>Add Note to Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -480,7 +483,7 @@
                         </div>
                     </div>
                     <div class="modal-footer bg-light border-0 p-3" style="border-radius: 0 0 12px 12px;">
-                        <button type="button" class="btn btn-light fw-medium border px-3 btn-sm" style="border-radius: 6px;" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-light fw-medium px-3 btn-sm" style="border-radius: 6px;" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-dark px-4 btn-sm fw-medium" style="border-radius: 6px;">Attach Note</button>
                     </div>
                 </form>
