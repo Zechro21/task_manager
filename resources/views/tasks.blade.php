@@ -10,7 +10,7 @@
     <style>
         :root {
             --surface-color: #ffffff;
-            --border-color: #cbd5e1;
+            --border-color: #e2e8f0; /* Soft 1px border color */
             --text-main: #0f172a;
             --text-muted: #64748b;
             
@@ -28,7 +28,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Removed border and modified background match */
         .workspace-hero-card {
             background: #0f172a;
             border: none;
@@ -37,15 +36,14 @@
             margin-bottom: 2rem;
         }
 
-        /* Completely stripped borders */
+        /* Added clean 1px border to sections without restoring stripped decorative borders */
         .panel-glass-card {
             background-color: var(--surface-color);
-            border: none;
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
         }
 
-        /* Stripped default left indicator bar */
         .interactive-row-card {
             border-left: none;
             transition: background-color 0.15s ease;
@@ -54,7 +52,6 @@
             background-color: #f1f5f9 !important;
         }
 
-        /* Stripped individual color-coded left accents */
         .interactive-row-card.accent-pending { border-left: none; }
         .interactive-row-card.accent-progress { border-left: none; }
         .interactive-row-card.accent-missed { border-left: none; }
@@ -107,14 +104,13 @@
             color: #ffffff;
         }
 
-        /* Stripped border from Calendar Widget Container */
+        /* Added 1px border around calendar container */
         .calendar-widget {
             background: #ffffff;
-            border: none;
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1rem;
         }
-        /* Stripped separator rule below month title */
         .calendar-header {
             font-weight: 700;
             color: var(--text-main);
@@ -168,10 +164,10 @@
         <div class="workspace-hero-card d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-4">
             <div>
                 <h2 class="fw-bold text-white mb-1">My Workspace</h2>
-                <p class="text-white-50 small mb-0">Operational workflow control, task processing & pipeline telemetry.</p>
+                <p class="text-white-50 small mb-0">Manage tasks, organize workflow, and view system status notes.</p>
             </div>
             <button class="btn btn-primary-premium d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-                <i class="fa-solid fa-plus-square"></i> <span>Initialize Task</span>
+                <i class="fa-solid fa-plus-square"></i> <span>Add Task</span>
             </button>
         </div>
 
@@ -179,14 +175,14 @@
             
             <div class="col-lg-7">
                 <div class="mb-3">
-                    <span class="section-header-pill"><i class="fa-solid fa-chart-simple"></i> Live Pipeline Logs</span>
+                    <span class="section-header-pill"><i class="fa-solid fa-chart-simple"></i> Active Tasks</span>
                 </div>
 
                 <?php if(empty($active_tasks)): ?>
                     <div class="panel-glass-card p-5 text-center text-muted">
                         <div class="py-4">
                             <i class="fa-solid fa-cubes-stacked fa-2x mb-3 text-secondary"></i>
-                            <p class="small fw-medium mb-0">No operational records identified inside this execution channel.</p>
+                            <p class="small fw-medium mb-0">No tasks found in this channel.</p>
                         </div>
                     </div>
                 <?php else: ?>
@@ -194,14 +190,13 @@
                         <div class="scroll-panel-container d-flex flex-column">
                             <?php foreach($active_tasks as $index => $task): 
                                 $statusAccent = ($task['status'] === 'In Progress') ? 'accent-progress' : 'accent-pending';
-                                // Changed assignment to prevent trailing bottom borders between looping items
                                 $borderBottom = ''; 
                             ?>
                                 <div class="interactive-row-card <?= $statusAccent ?> p-4 <?= $borderBottom ?>">
                                     <div class="d-flex justify-content-between align-items-start gap-3">
                                         <div class="w-75">
                                             <h6 class="fw-bold text-dark mb-1"><?= htmlspecialchars($task['title']) ?></h6>
-                                            <p class="text-muted small mb-0 text-wrap"><?= htmlspecialchars($task['description'] ?? 'Empty description field context.') ?></p>
+                                            <p class="text-muted small mb-0 text-wrap"><?= htmlspecialchars($task['description'] ?? 'No description provided.') ?></p>
                                         </div>
                                         <div>
                                             <?php if($task['status'] === 'In Progress'): ?>
@@ -216,7 +211,7 @@
                                         <div class="small text-muted d-flex align-items-center gap-2">
                                             <i class="fa-regular fa-clock text-primary"></i>
                                             <span class="fw-semibold">
-                                                <?= $task['due_date'] ? date('M d, Y', strtotime($task['due_date'])) : 'No Lifespan Configured' ?>
+                                                <?= $task['due_date'] ? date('M d, Y', strtotime($task['due_date'])) : 'No Due Date' ?>
                                             </span>
                                         </div>
                                         <div class="d-flex gap-2">
@@ -233,7 +228,7 @@
                                             </button>
                                             <a href="{{ route('tasks.process.get', ['action' => 'delete', 'id' => $task['id']]) }}" 
                                                class="btn btn-outline-danger action-icon-btn border-0" 
-                                               onclick="return confirm('Permanently drop this active task tracking record?');"
+                                               onclick="return confirm('Permanently delete this task?');"
                                                title="Drop Entry">
                                                 <i class="fa-regular fa-trash-can"></i>
                                             </a>
@@ -246,14 +241,14 @@
                 <?php endif; ?>
 
                 <div class="d-flex justify-content-between align-items-center mt-5 mb-3">
-                    <span class="section-header-pill"><i class="fa-regular fa-message"></i> System Context Notes</span>
-                    <button class="btn btn-outline-dark btn-sm fw-semibold" style="border-radius: 6px; font-size:0.8rem;" data-bs-toggle="modal" data-bs-target="#addTaskNoteModal">+ Append Note</button>
+                    <span class="section-header-pill"><i class="fa-regular fa-message"></i> System Notes</span>
+                    <button class="btn btn-outline-dark btn-sm fw-semibold" style="border-radius: 6px; font-size:0.8rem;" data-bs-toggle="modal" data-bs-target="#addTaskNoteModal">+ Add Note</button>
                 </div>
 
                 <div class="panel-glass-card">
                     <div class="scroll-panel-container">
                         <?php if(empty($logs)): ?>
-                            <div class="p-4 text-center text-muted small fw-medium">No contextual updates cataloged on this server node.</div>
+                            <div class="p-4 text-center text-muted small fw-medium">No system notes saved yet.</div>
                         <?php else: ?>
                             <div class="list-group list-group-flush" style="--bs-list-group-border-color: transparent;">
                                 <?php foreach($logs as $log): ?>
@@ -263,7 +258,17 @@
                                                 <span class="badge bg-secondary text-dark border-0 small mb-2 text-truncate" style="max-width: 220px; font-size: 0.7rem; background-color: #e2e8f0 !important;"><i class="fa-solid fa-code-fork me-1"></i><?= htmlspecialchars($log['task_title']) ?></span>
                                                 <p class="text-secondary small mb-0"><?= htmlspecialchars($log['remarks']) ?></p>
                                             </div>
-                                            <a href="{{ route('tasks.process.get', ['action' => 'delete_log', 'id' => $log['id']]) }}" class="text-danger p-1" onclick="return confirm('Delete this custom note component?');"><i class="fa-regular fa-trash-can small"></i></a>
+                                            <div class="d-flex gap-1 align-items-center">
+                                                <button class="btn btn-link text-dark edit-note-btn p-1" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#editTaskNoteModal"
+                                                        data-id="<?= $log['id'] ?>"
+                                                        data-task="<?= htmlspecialchars($log['task_title']) ?>"
+                                                        data-remarks="<?= htmlspecialchars($log['remarks']) ?>">
+                                                    <i class="fa-regular fa-pen-to-square small"></i>
+                                                </button>
+                                                <a href="{{ route('tasks.process.get', ['action' => 'delete_log', 'id' => $log['id']]) }}" class="text-danger p-1" onclick="return confirm('Delete this note?');"><i class="fa-regular fa-trash-can small"></i></a>
+                                            </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -276,7 +281,7 @@
             <div class="col-lg-5">
                 
                 <div class="mb-3">
-                    <span class="section-header-pill"><i class="fa-regular fa-calendar-days"></i> Workspace Schedule Context</span>
+                    <span class="section-header-pill"><i class="fa-regular fa-calendar-days"></i> Workspace Schedule</span>
                 </div>
                 <div class="calendar-widget mb-4">
                     <div class="calendar-header d-flex justify-content-between align-items-center">
@@ -317,20 +322,20 @@
                 </div>
 
                 <div class="mb-3">
-                    <span class="section-header-pill text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Overdue Target Disruptions</span>
+                    <span class="section-header-pill text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Overdue Tasks</span>
                 </div>
 
                 <div class="panel-glass-card interactive-row-card accent-missed mb-4">
                     <div class="scroll-panel-container">
                         <?php if(empty($missed_tasks)): ?>
-                            <div class="p-4 text-center text-success small fw-semibold"><i class="fa-solid fa-shield-halved me-2"></i>Infrastructure stable. Zero exceptions.</div>
+                            <div class="p-4 text-center text-success small fw-semibold"><i class="fa-solid fa-shield-halved me-2"></i>All clear. Zero exceptions.</div>
                         <?php else: ?>
                             <div class="list-group list-group-flush" style="--bs-list-group-border-color: transparent;">
                                 <?php foreach($missed_tasks as $mt): ?>
                                     <div class="list-group-item p-3 bg-transparent border-0 d-flex justify-content-between align-items-center gap-2">
                                         <div class="w-70">
                                             <h6 class="fw-bold text-dark mb-1 small text-wrap"><?= htmlspecialchars($mt['title']) ?></h6>
-                                            <span class="text-danger fw-bold d-block" style="font-size: 0.75rem;"><i class="fa-solid fa-history me-1"></i>Breached: <?= date('M d, Y', strtotime($mt['due_date'])) ?></span>
+                                            <span class="text-danger fw-bold d-block" style="font-size: 0.75rem;"><i class="fa-solid fa-history me-1"></i>Due date passed: <?= date('M d, Y', strtotime($mt['due_date'])) ?></span>
                                         </div>
                                         <span class="badge bg-danger-subtle text-danger badge-premium"><?= $mt['status'] ?></span>
                                     </div>
@@ -341,20 +346,20 @@
                 </div>
 
                 <div class="mb-3">
-                    <span class="section-header-pill text-success"><i class="fa-solid fa-box-archive"></i> Completion Records Registry</span>
+                    <span class="section-header-pill text-success"><i class="fa-solid fa-box-archive"></i> Completed Records</span>
                 </div>
 
                 <div class="panel-glass-card interactive-row-card accent-completed">
                     <div class="scroll-panel-container">
                         <?php if(empty($completed_tasks)): ?>
-                            <div class="p-4 text-center text-muted small fw-medium">Vault clear. No historical entries tracked yet.</div>
+                            <div class="p-4 text-center text-muted small fw-medium">No historical entries found.</div>
                         <?php else: ?>
                             <div class="list-group list-group-flush" style="--bs-list-group-border-color: transparent;">
                                 <?php foreach($completed_tasks as $ct): ?>
                                     <div class="list-group-item p-3 bg-transparent border-0 d-flex justify-content-between align-items-center gap-2">
                                         <div class="w-70">
                                             <h6 class="fw-bold text-muted text-decoration-line-through mb-1 small text-wrap"><?= htmlspecialchars($ct['title']) ?></h6>
-                                            <span class="text-success fw-semibold d-block" style="font-size: 0.75rem;"><i class="fa-solid fa-circle-check me-1"></i>Terminated Cleanly</span>
+                                            <span class="text-success fw-semibold d-block" style="font-size: 0.75rem;"><i class="fa-solid fa-circle-check me-1"></i>Completed</span>
                                         </div>
                                         <span class="badge bg-success text-white badge-premium">Verified</span>
                                     </div>
@@ -384,8 +389,8 @@
                             <input type="text" name="title" class="form-control" required placeholder="Type task title here..." style="border-radius: 6px; padding: 0.6rem 0.75rem;">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small fw-bold text-secondary">Description Context</label>
-                            <textarea name="description" class="form-control" rows="3" placeholder="Provide extra notes or assignment context details..." style="border-radius: 6px;"></textarea>
+                            <label class="form-label small fw-bold text-secondary">Description</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="Provide description details..." style="border-radius: 6px;"></textarea>
                         </div>
                         <div class="row g-3">
                             <div class="col-6">
@@ -468,7 +473,7 @@
                         <div class="mb-3">
                             <label class="form-label small fw-bold text-secondary">Select Target Task</label>
                             <select name="task_title" class="form-select" required style="border-radius: 6px;">
-                                <option value="" disabled selected>Choose a task pipeline reference...</option>
+                                <option value="" disabled selected>Choose a task link reference...</option>
                                 <?php if(!empty($active_tasks)): ?>
                                     <?php foreach($active_tasks as $task): ?>
                                         <option value="<?= htmlspecialchars($task['title']) ?>"><?= htmlspecialchars($task['title']) ?></option>
@@ -477,8 +482,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small fw-bold text-secondary font-medium">Note / Comment Details</label>
-                            <textarea name="remarks" class="form-control" rows="3" required placeholder="Type operational status notes, delays, or quick logs here..." style="border-radius: 6px;"></textarea>
+                            <label class="form-label small fw-bold text-secondary font-medium">Note Details</label>
+                            <textarea name="remarks" class="form-control" rows="3" required placeholder="Type operational status notes here..." style="border-radius: 6px;"></textarea>
                             <input type="hidden" name="log_type" value="General Note">
                         </div>
                     </div>
@@ -491,9 +496,46 @@
         </div>
     </div>
 
+    <div class="modal fade" id="editTaskNoteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered px-3">
+            <div class="modal-content border-0 shadow" style="border-radius:12px;">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fa-regular fa-comment-dots text-success me-2"></i>Edit Note</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('tasks.process') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="action" value="update_log">
+                    <input type="hidden" name="log_id" id="edit_log_id">
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">Target Task</label>
+                            <select name="task_title" id="edit_log_task" class="form-select" required style="border-radius: 6px;">
+                                <?php if(!empty($active_tasks)): ?>
+                                    <?php foreach($active_tasks as $task): ?>
+                                        <option value="<?= htmlspecialchars($task['title']) ?>"><?= htmlspecialchars($task['title']) ?></option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary font-medium">Note Details</label>
+                            <textarea name="remarks" id="edit_log_remarks" class="form-control" rows="3" required style="border-radius: 6px;"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light border-0 p-3" style="border-radius: 0 0 12px 12px;">
+                        <button type="button" class="btn btn-light fw-medium px-3 btn-sm" style="border-radius: 6px;" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success text-white px-4 btn-sm fw-medium" style="border-radius: 6px;">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Task edit mapping
             const editTaskButtons = document.querySelectorAll('.edit-task-btn');
             editTaskButtons.forEach(btn => {
                 btn.addEventListener('click', function () {
@@ -502,6 +544,16 @@
                     document.getElementById('edit_description').value = this.dataset.desc;
                     document.getElementById('edit_due_date').value = this.dataset.date;
                     document.getElementById('edit_status').value = this.dataset.status;
+                });
+            });
+
+            // Note edit mapping
+            const editNoteButtons = document.querySelectorAll('.edit-note-btn');
+            editNoteButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.getElementById('edit_log_id').value = this.dataset.id;
+                    document.getElementById('edit_log_task').value = this.dataset.task;
+                    document.getElementById('edit_log_remarks').value = this.dataset.remarks;
                 });
             });
         });
