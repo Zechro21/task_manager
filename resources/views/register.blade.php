@@ -93,7 +93,7 @@
                         <label class="form-label small fw-semibold text-dark">Username</label>
                         <div class="input-group input-group-custom">
                             <span class="input-group-text text-muted small"><i class="fa-regular fa-user"></i></span>
-                            <input type="text" name="username" class="form-control ps-1" placeholder="johndoe" value="{{ old('username') }}" required autofocus>
+                            <input type="text" name="name" class="form-control ps-1" placeholder="johndoe" value="{{ old('name') }}" required autofocus>
                         </div>
                     </div>
 
@@ -141,7 +141,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Multi-field visibility switcher utility
         function toggleFieldPassword(fieldId, iconId) {
             const passInputField = document.getElementById(fieldId);
             const toggleIconNode = document.getElementById(iconId);
