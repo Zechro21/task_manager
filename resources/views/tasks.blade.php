@@ -3,67 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace Records - Task Manager</title>
+    <title>Workspace Analytics - Platform Control</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --glass-bg: #ffffff;
+            --surface-color: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            
+            /* Strict Brand Tokens */
+            --accent-primary: #3b82f6;
+            --state-pending: #475569;
+            --state-progress: #f59e0b;
+            --state-missed: #ef4444;
+            --state-completed: #10b981;
+        }
+
         body { 
-            background-color: #f8fafc; 
-            color: #334155; 
-            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background-color: #f1f5f9; 
+            color: var(--text-main); 
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        /* Mobile-first structural layout optimizations */
-        .workspace-card {
-            border: none;
+
+        /* Hero Wrapper Panel */
+        .workspace-hero-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
+        }
+
+        /* Unified Modern Dashboard Panels */
+        .panel-glass-card {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
             overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .workspace-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+        .interactive-row-card {
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .interactive-row-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08);
+            background-color: #fafafa;
         }
 
-        /* Task specific side status accents */
-        .accent-pending { border-left: 5px solid #64748b; }
-        .accent-progress { border-left: 5px solid #f59e0b; }
-        .accent-missed { border-left: 5px solid #ef4444; }
-        .accent-completed { border-left: 5px solid #10b981; }
+        /* Rigid Operational Context Colors */
+        .interactive-row-card.accent-pending { border-left-color: var(--state-pending); }
+        .interactive-row-card.accent-progress { border-left-color: var(--state-progress); }
+        .interactive-row-card.accent-missed { border-left-color: var(--state-missed); }
+        .interactive-row-card.accent-completed { border-left-color: var(--state-completed); }
 
-        .card-header-clean {
-            background-color: #ffffff;
-            border-bottom: 1px solid #f1f5f9;
-            padding: 1.25rem 1rem;
+        .section-header-pill {
+            font-size: 0.725rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        /* Responsive custom card item wrapper */
-        .task-item-body {
-            padding: 1.25rem 1rem;
-        }
-
-        .mobile-action-btn {
-            padding: 0.4rem 0.75rem;
-            font-size: 0.85rem;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-        .scroll-panel {
-            max-height: 380px;
+        /* Custom Scroll Areas */
+        .scroll-panel-container {
+            max-height: 400px;
             overflow-y: auto;
+            scrollbar-width: thin;
         }
 
-        /* Custom subtle badge layout styles */
-        .badge-pill-custom {
+        /* Smooth UI Pill Elements */
+        .badge-premium {
             font-size: 0.75rem;
             font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 50px;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+        }
+
+        .action-icon-btn {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-premium {
+            background-color: var(--accent-primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 0.6rem 1.25rem;
+            transition: all 0.2s ease;
+        }
+        .btn-primary-premium:hover {
+            background-color: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
     </style>
 </head>
@@ -71,105 +121,113 @@
 
     @include('partials.nav') 
 
-    <div class="container my-4 px-3 px-md-4">
+    <div class="container my-5 px-3 px-lg-4">
         
         @if(session('toast'))
-            <div class="alert alert-{{ session('toast.type') }} alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-radius: 12px;">
-                <span class="fw-medium small"><i class="fa-solid fa-circle-info me-2"></i>{{ session('toast.message') }}</span>
+            <div class="alert alert-{{ session('toast.type') }} alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-radius: 14px;">
+                <div class="d-flex align-items-center gap-2 small">
+                    <i class="fa-solid fa-bolt-lightning"></i>
+                    <span class="fw-semibold">{{ session('toast.message') }}</span>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="workspace-hero-card d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-4">
             <div>
-                <h4 class="fw-bold text-dark mb-1">My Workspace</h4>
-                <p class="text-muted small mb-0">Track pipeline records & project updates</p>
+                <h2 class="fw-bold text-white mb-1">My Workspace</h2>
+                <p class="text-white-50 small mb-0">Operational workflow control, task processing & pipeline telemetry.</p>
             </div>
-            <button class="btn btn-primary px-3 py-2 fw-medium shadow-sm d-flex align-items-center gap-2" style="border-radius: 10px;" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-                <i class="fa-solid fa-plus"></i> <span class="d-none d-sm-inline">Add Task</span>
+            <button class="btn btn-primary-premium d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                <i class="fa-solid fa-plus-square"></i> <span>Initialize Task</span>
             </button>
         </div>
 
         <div class="row g-4">
             
             <div class="col-lg-7">
-                
-                <div class="d-flex align-items-center gap-2 mb-3 px-1">
-                    <i class="fa-solid fa-layer-group text-secondary small"></i>
-                    <span class="text-uppercase tracking-wider font-semibold small text-muted fw-bold">Active Elements</span>
+                <div class="mb-3">
+                    <span class="section-header-pill"><i class="fa-solid fa-chart-simple"></i> Live Pipeline Logs</span>
                 </div>
 
                 <?php if(empty($active_tasks)): ?>
-                    <div class="workspace-card p-5 text-center text-muted">
-                        <i class="fa-regular fa-folder-open fa-2x mb-3 text-black-50"></i>
-                        <p class="small mb-0">No active operational tasks found inside your pipeline view.</p>
+                    <div class="panel-glass-card p-5 text-center text-muted border-dashed">
+                        <div class="py-4">
+                            <i class="fa-solid fa-cubes-stacked fa-2x mb-3 text-light text-secondary"></i>
+                            <p class="small fw-medium mb-0">No operational records identified inside this execution channel.</p>
+                        </div>
                     </div>
                 <?php else: ?>
-                    <?php foreach($active_tasks as $task): 
-                        $statusAccent = ($task['status'] === 'In Progress') ? 'accent-progress' : 'accent-pending';
-                    ?>
-                        <div class="workspace-card <?= $statusAccent ?>">
-                            <div class="task-item-body">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div style="max-width: 75%;">
-                                        <h6 class="fw-bold text-dark mb-1 text-wrap"><?= htmlspecialchars($task['title']) ?></h6>
-                                        <p class="text-muted small mb-2 text-wrap"><?= htmlspecialchars($task['description'] ?? 'No descriptions provided.') ?></p>
+                    <div class="d-flex flex-column gap-3">
+                        <?php foreach($active_tasks as $task): 
+                            $statusAccent = ($task['status'] === 'In Progress') ? 'accent-progress' : 'accent-pending';
+                        ?>
+                            <div class="panel-glass-card interactive-row-card <?= $statusAccent ?> p-4">
+                                <div class="d-flex justify-content-between align-items-start gap-3">
+                                    <div class="w-75">
+                                        <h6 class="fw-bold text-dark mb-1"><?= htmlspecialchars($task['title']) ?></h6>
+                                        <p class="text-muted small mb-0 text-wrap"><?= htmlspecialchars($task['description'] ?? 'Empty description field context.') ?></p>
                                     </div>
-                                    
-                                    <?php if($task['status'] === 'In Progress'): ?>
-                                        <span class="badge bg-warning-subtle text-warning-emphasis badge-pill-custom">In Progress</span>
-                                    <?php else: ?>
-                                        <span class="badge bg-secondary-subtle text-secondary-emphasis badge-pill-custom">Pending</span>
-                                    <?php endif; ?>
+                                    <div>
+                                        <?php if($task['status'] === 'In Progress'): ?>
+                                            <span class="badge bg-warning-subtle text-warning badge-premium">In Progress</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-secondary-subtle text-secondary badge-premium">Pending</span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
 
-                                <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-light">
-                                    <div class="d-flex align-items-center text-secondary small">
-                                        <i class="fa-regular fa-calendar me-1.5 text-muted small"></i>
-                                        <span class="fw-medium text-xs">
-                                            <?= $task['due_date'] ? date('M d, Y', strtotime($task['due_date'])) : 'No Deadline Target' ?>
+                                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-light-subtle">
+                                    <div class="small text-muted d-flex align-items-center gap-2">
+                                        <i class="fa-regular fa-clock text-primary"></i>
+                                        <span class="fw-semibold">
+                                            <?= $task['due_date'] ? date('M d, Y', strtotime($task['due_date'])) : 'No Lifespan Configured' ?>
                                         </span>
                                     </div>
-                                    
-                                    <div class="d-flex gap-1">
-                                        <button class="btn btn-light border mobile-action-btn edit-task-btn text-dark shadow-xs" 
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-light border action-icon-btn edit-task-btn text-dark" 
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#editTaskModal" 
                                                 data-id="<?= $task['id'] ?>" 
                                                 data-title="<?= htmlspecialchars($task['title']) ?>" 
                                                 data-desc="<?= htmlspecialchars($task['description']) ?>" 
                                                 data-date="<?= $task['due_date'] ?>" 
-                                                data-status="<?= $task['status'] ?>"><i class="fa-regular fa-pen-to-square me-1"></i>Edit</button>
-                                        <a href="{{ route('tasks.process.get', ['action' => 'delete', 'id' => $task['id']]) }}" class="btn btn-outline-danger border-0 mobile-action-btn" onclick="return confirm('Permanently drop this active task tracking record?');"><i class="fa-regular fa-trash-can"></i></a>
+                                                data-status="<?= $task['status'] ?>"
+                                                title="Edit Entry">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                        </button>
+                                        <a href="{{ route('tasks.process.get', ['action' => 'delete', 'id' => $task['id']]) }}" 
+                                           class="btn btn-outline-danger action-icon-btn border-0" 
+                                           onclick="return confirm('Permanently drop this active task tracking record?');"
+                                           title="Drop Entry">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
 
-                <div class="d-flex justify-content-between align-items-center mt-4 mb-3 px-1">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="fa-regular fa-comment-dots text-secondary small"></i>
-                        <span class="text-uppercase tracking-wider small text-muted fw-bold">Progress Context Memos</span>
-                    </div>
-                    <button class="btn btn-dark btn-sm px-2.5 py-1 small fw-medium" style="border-radius: 8px;" data-bs-toggle="modal" data-bs-target="#addTaskNoteModal">+ Add Memo</button>
+                <div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+                    <span class="section-header-pill"><i class="fa-regular fa-message"></i> System Context Notes</span>
+                    <button class="btn btn-outline-dark btn-sm fw-semibold" style="border-radius: 8px; font-size:0.8rem;" data-bs-toggle="modal" data-bs-target="#addTaskNoteModal">+ Append Note</button>
                 </div>
 
-                <div class="workspace-card p-0">
-                    <div class="scroll-panel">
+                <div class="panel-glass-card">
+                    <div class="scroll-panel-container">
                         <?php if(empty($logs)): ?>
-                            <div class="p-4 text-center text-muted small">No contextual task updates or history logged yet.</div>
+                            <div class="p-4 text-center text-muted small fw-medium">No contextual updates cataloged on this server node.</div>
                         <?php else: ?>
                             <div class="list-group list-group-flush">
                                 <?php foreach($logs as $log): ?>
                                     <div class="list-group-item p-3 border-light bg-transparent">
                                         <div class="d-flex justify-content-between align-items-start gap-3">
-                                            <div>
-                                                <span class="badge bg-light text-dark border small mb-2 d-inline-block text-truncate" style="max-width: 180px;"><i class="fa-solid fa-link me-1 text-muted"></i><?= htmlspecialchars($log['task_title']) ?></span>
-                                                <p class="text-secondary small mb-0 text-wrap"><?= htmlspecialchars($log['remarks']) ?></p>
+                                            <div class="w-100">
+                                                <span class="badge bg-dark-subtle text-dark border-0 small mb-2 text-truncate" style="max-width: 220px; font-size: 0.7rem;"><i class="fa-solid fa-code-fork me-1"></i><?= htmlspecialchars($log['task_title']) ?></span>
+                                                <p class="text-secondary small mb-0"><?= htmlspecialchars($log['remarks']) ?></p>
                                             </div>
-                                            <a href="{{ route('tasks.process.get', ['action' => 'delete_log', 'id' => $log['id']]) }}" class="text-danger small text-decoration-none fw-medium" onclick="return confirm('Delete this custom note component?');"><i class="fa-regular fa-trash-can"></i></a>
+                                            <a href="{{ route('tasks.process.get', ['action' => 'delete_log', 'id' => $log['id']]) }}" class="text-danger p-1" onclick="return confirm('Delete this custom note component?');"><i class="fa-regular fa-trash-can small"></i></a>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -181,24 +239,23 @@
 
             <div class="col-lg-5">
                 
-                <div class="d-flex align-items-center gap-2 mb-3 px-1">
-                    <i class="fa-solid fa-triangle-exclamation text-danger small"></i>
-                    <span class="text-uppercase tracking-wider small text-danger fw-bold">Breached Deadlines</span>
+                <div class="mb-3">
+                    <span class="section-header-pill text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Overdue Target Disruptions</span>
                 </div>
 
-                <div class="workspace-card accent-missed p-0 mb-4">
-                    <div class="scroll-panel">
+                <div class="panel-glass-card interactive-row-card accent-missed mb-4">
+                    <div class="scroll-panel-container">
                         <?php if(empty($missed_tasks)): ?>
-                            <div class="p-4 text-center text-muted small"><i class="fa-solid fa-circle-check text-success me-2"></i>Excellent workflow health! Zero delayed tasks.</div>
+                            <div class="p-4 text-center text-success small fw-semibold"><i class="fa-solid fa-shield-halved me-2"></i>Infrastructure stable. Zero exceptions.</div>
                         <?php else: ?>
                             <div class="list-group list-group-flush">
                                 <?php foreach($missed_tasks as $mt): ?>
-                                    <div class="list-group-item p-3 bg-transparent border-light d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="fw-bold text-dark mb-0 small text-wrap"><?= htmlspecialchars($mt['title']) ?></h6>
-                                            <span class="text-danger fw-medium style-xs" style="font-size: 0.8rem;"><i class="fa-solid fa-clock-rotate-left me-1"></i>Expired: <?= date('M d, Y', strtotime($mt['due_date'])) ?></span>
+                                    <div class="list-group-item p-3 bg-transparent border-light d-flex justify-content-between align-items-center gap-2">
+                                        <div class="w-70">
+                                            <h6 class="fw-bold text-dark mb-1 small text-wrap"><?= htmlspecialchars($mt['title']) ?></h6>
+                                            <span class="text-danger fw-bold d-block" style="font-size: 0.75rem;"><i class="fa-solid fa-history me-1"></i>Breached: <?= date('M d, Y', strtotime($mt['due_date'])) ?></span>
                                         </div>
-                                        <span class="badge bg-danger-subtle text-danger badge-pill-custom"><?= $mt['status'] ?></span>
+                                        <span class="badge bg-danger-subtle text-danger badge-premium"><?= $mt['status'] ?></span>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -206,24 +263,23 @@
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center gap-2 mb-3 px-1">
-                    <i class="fa-regular fa-circle-check text-success small"></i>
-                    <span class="text-uppercase tracking-wider small text-success fw-bold">Completed Vault</span>
+                <div class="mb-3">
+                    <span class="section-header-pill text-success"><i class="fa-solid fa-box-archive"></i> Completion Records Registry</span>
                 </div>
 
-                <div class="workspace-card accent-completed p-0">
-                    <div class="scroll-panel">
+                <div class="panel-glass-card interactive-row-card accent-completed">
+                    <div class="scroll-panel-container">
                         <?php if(empty($completed_tasks)): ?>
-                            <div class="p-4 text-center text-muted small">No archives detected inside the completion logs registry.</div>
+                            <div class="p-4 text-center text-muted small fw-medium">Vault clear. No historical entries tracked yet.</div>
                         <?php else: ?>
                             <div class="list-group list-group-flush">
                                 <?php foreach($completed_tasks as $ct): ?>
-                                    <div class="list-group-item p-3 bg-transparent border-light d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="fw-bold text-muted text-decoration-line-through mb-0 small text-wrap"><?= htmlspecialchars($ct['title']) ?></h6>
-                                            <span class="text-success fw-medium style-xs d-block" style="font-size: 0.8rem;"><i class="fa-solid fa-check-double me-1"></i>Closed out cleanly</span>
+                                    <div class="list-group-item p-3 bg-transparent border-light d-flex justify-content-between align-items-center gap-2">
+                                        <div class="w-70">
+                                            <h6 class="fw-bold text-muted text-decoration-line-through mb-1 small text-wrap"><?= htmlspecialchars($ct['title']) ?></h6>
+                                            <span class="text-success fw-semibold d-block" style="font-size: 0.75rem;"><i class="fa-solid fa-circle-check me-1"></i>Terminated Cleanly</span>
                                         </div>
-                                        <span class="badge bg-success text-white badge-pill-custom">Done</span>
+                                        <span class="badge bg-success text-white badge-premium">Verified</span>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
