@@ -21,6 +21,16 @@
         color: #f8fafc !important;
     }
 
+    /* Custom Toggler Styling */
+    .custom-navbar .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.15);
+        padding: 0.4rem 0.6rem;
+    }
+    
+    .custom-navbar .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+    }
+
     .nav-group-links .nav-link-custom {
         color: #94a3b8 !important;
         font-weight: 500;
@@ -29,6 +39,7 @@
         border-radius: 6px;
         transition: all 0.2s ease;
         text-decoration: none;
+        display: inline-block;
     }
 
     .nav-group-links .nav-link-custom:hover {
@@ -81,36 +92,84 @@
         border-color: #ef4444 !important;
         box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
     }
+
+    /* Desktop vertical divider utility */
+    .nav-divider {
+        width: 1px;
+        height: 20px;
+        background-color: rgba(255,255,255,0.15);
+    }
+
+    /* Responsive adjustments for mobile/tablets */
+    @media (max-width: 991.98px) {
+        .nav-group-links {
+            flex-direction: column;
+            align-items: flex-start !important;
+            width: 100%;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-top: 1rem;
+        }
+        
+        .nav-group-links .nav-link-custom {
+            width: 100%;
+        }
+
+        .nav-divider {
+            display: none; /* Hide divider on mobile viewports */
+        }
+
+        .user-actions-wrapper {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+            width: 100%;
+            padding-bottom: 0.5rem;
+        }
+
+        .user-profile-badge {
+            width: 100%;
+            border-radius: 6px; /* Switch to block layout on mobile */
+            justify-content: flex-start;
+        }
+
+        .btn-logout-custom {
+            width: 100%;
+            text-align: center;
+        }
+    }
 </style>
 
-<nav class="navbar navbar-expand-lg custom-navbar">
+<nav class="navbar navbar-expand-lg custom-navbar navbar-dark">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{{ route('dashboard') }}">
             <span class="text-primary me-1">⚡</span> Task Manager
         </a>
         
-        <div class="d-flex align-items-center ms-auto">
-            
-            <div class="nav-group-links d-flex align-items-center me-3">
-                <a href="{{ route('dashboard') }}" class="nav-link-custom me-1 {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
-                <a href="{{ route('tasks.index') }}" class="nav-link-custom me-1 {{ request()->routeIs('tasks.*') ? 'active' : '' }}">Manage Tasks</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTaskManager" aria-controls="navbarTaskManager" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarTaskManager">
+            <div class="nav-group-links d-flex align-items-center ms-auto me-lg-3">
+                <a href="{{ route('dashboard') }}" class="nav-link-custom {{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
+                <a href="{{ route('tasks.index') }}" class="nav-link-custom {{ request()->routeIs('tasks.*') ? 'active' : '' }}">Manage Tasks</a>
                 <a href="/myprofile" class="nav-link-custom {{ request()->is('myprofile') ? 'active' : '' }}">My Profile</a>
             </div>
 
-            <div style="width: 1px; height: 20px; background-color: rgba(255,255,255,0.15);" class="me-3"></div>
+            <div class="nav-divider me-3 d-none d-lg-block"></div>
 
-            <div class="d-flex align-items-center">
-                <div class="user-profile-badge d-flex align-items-center me-3">
+            <div class="user-actions-wrapper d-flex align-items-center">
+                <div class="user-profile-badge d-flex align-items-center me-lg-3">
                     <img src="{{ $avatarUrl }}" alt="Avatar" class="rounded-circle nav-avatar-img me-2">
                     <span class="small text-white-50">Hi, <strong class="text-white fw-medium">{{ $user->username ?? 'User' }}</strong></span>
                 </div>
                 
-                <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
+                <form action="{{ route('logout') }}" method="POST" class="m-0 p-0 w-100-mobile">
                     @csrf
                     <button type="submit" class="btn-logout-custom">Logout</button>
                 </form>
             </div>
-
         </div>
     </div>
 </nav>
