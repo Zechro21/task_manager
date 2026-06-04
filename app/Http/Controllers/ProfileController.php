@@ -72,23 +72,23 @@ class ProfileController extends Controller
         ]);
     }
 
-    // 4. HANDLE AVATAR FILE UPLOAD
-    public function updateAvatar(Request $request) 
-{
-    // 1. Validate that it's actually an image file
-    $request->validate([
-        'profile_pic' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+        // 4. HANDLE AVATAR FILE UPLOAD
+        public function updateAvatar(Request $request) 
+        {
+        // 1. Validate that it's actually an image file
+        $request->validate([
+            'profile_pic' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    // 2. Safely get the logged-in user's ID from Session or Auth
-    $user_id = session('user_id') ?? session('user')->id ?? auth()->id();
-    
-    if (!$user_id) {
-        return redirect()->to('/login')->with('toast', ['type' => 'danger', 'message' => 'Session expired. Please log in again.']);
-    }
+        // 2. Safely get the logged-in user's ID from Session or Auth
+        $user_id = session('user_id') ?? session('user')->id ?? auth()->id();
+        
+        if (!$user_id) {
+            return redirect()->to('/login')->with('toast', ['type' => 'danger', 'message' => 'Session expired. Please log in again.']);
+        }
 
-    if ($request->hasFile('profile_pic')) {
-        $file = $request->file('profile_pic');
+        if ($request->hasFile('profile_pic')) {
+            $file = $request->file('profile_pic');
         
         // 3. Generate a clean, unique name for the file
         $filename = 'avatar_' . $user_id . '_' . time() . '.' . $file->getClientOriginalExtension();

@@ -82,7 +82,7 @@ class AuthController extends Controller
             'message' => 'You have been logged out successfully.'
         ]);
     }
-   // 1. ADD THIS METHOD TO FIX THE ERROR
+    
     public function index()
     {
         // Fallback protection check if not using standard auth middleware

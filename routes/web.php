@@ -10,7 +10,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Put these inside your auth middleware group so only logged-in users can reach them
     Route::middleware(['auth'])->group(function () {
     
     // URL to handle saving a new task (POST)
@@ -24,7 +23,6 @@ Route::get('/', function () {
 
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
 });
-// --- GUEST ROUTES (Only logged-out users can see these) ---
     Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -33,17 +31,15 @@ Route::get('/', function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-// --- AUTH PROTECTED ROUTES (Only logged-in users can access these) ---
     Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     
-    // Task routes we set up previously
+
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::post('/tasks/update/{id}', [TaskController::class, 'update'])->name('tasks.update');
     Route::get('/tasks/delete/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     
-    // Put this inside your Route::middleware(['auth'])->group(...) block:
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/myprofile', [ProfileController::class, 'index'])->name('profile.index');
